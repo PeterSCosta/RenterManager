@@ -27,6 +27,10 @@ namespace RenterManager.Infrastructure.Contexts
 
         public DbSet<ChatHistory<BlazorHeroUser>> ChatHistories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<Event> Events { get; set; }
+        public DbSet<EventProduct> EventProducts { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentType> DocumentTypes { get; set; }

@@ -48,10 +48,10 @@ namespace RenterManager.Application.Features.Products.Queries.GetAllPaged
                 Id = e.Id,
                 Name = e.Name,
                 Description = e.Description,
-                Rate = e.Rate,
-                Barcode = e.Barcode,
-                Brand = e.Brand.Name,
-                BrandId = e.BrandId
+                Rate = 1m,
+                Barcode = string.Empty,
+                Brand = string.Empty,
+                BrandId = 0
             };
             var productFilterSpec = new ProductFilterSpecification(request.SearchString);
             if (request.OrderBy?.Any() != true)

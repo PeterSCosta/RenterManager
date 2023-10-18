@@ -48,11 +48,11 @@ namespace RenterManager.Application.Features.Products.Commands.AddEdit
 
         public async Task<Result<int>> Handle(AddEditProductCommand command, CancellationToken cancellationToken)
         {
-            if (await _unitOfWork.Repository<Product>().Entities.Where(p => p.Id != command.Id)
-                .AnyAsync(p => p.Barcode == command.Barcode, cancellationToken))
-            {
-                return await Result<int>.FailAsync(_localizer["Barcode already exists."]);
-            }
+            //if (await _unitOfWork.Repository<Product>().Entities.Where(p => p.Id != command.Id)
+            //    .AnyAsync(p => p.Barcode == command.Barcode, cancellationToken))
+            //{
+            //    return await Result<int>.FailAsync(_localizer["Barcode already exists."]);
+            //}
 
             var uploadRequest = command.UploadRequest;
             if (uploadRequest != null)
@@ -82,8 +82,7 @@ namespace RenterManager.Application.Features.Products.Commands.AddEdit
                     {
                         product.ImageDataURL = _uploadService.UploadAsync(uploadRequest);
                     }
-                    product.Rate = (command.Rate == 0) ? product.Rate : command.Rate;
-                    product.BrandId = (command.BrandId == 0) ? product.BrandId : command.BrandId;
+
                     await _unitOfWork.Repository<Product>().UpdateAsync(product);
                     await _unitOfWork.Commit(cancellationToken);
                     return await Result<int>.SuccessAsync(product.Id, _localizer["Product Updated"]);

@@ -49,9 +49,9 @@ namespace RenterManager.Application.Features.Products.Queries.Export
             {
                 { _localizer["Id"], item => item.Id },
                 { _localizer["Name"], item => item.Name },
-                { _localizer["Barcode"], item => item.Barcode },
+                { _localizer["Barcode"], item => string.Empty },
                 { _localizer["Description"], item => item.Description },
-                { _localizer["Rate"], item => item.Rate }
+                { _localizer["Rate"], item => string.Empty }
             }, sheetName: _localizer["Products"]);
 
             return await Result<string>.SuccessAsync(data: data);

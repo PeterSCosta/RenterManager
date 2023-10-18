@@ -16,7 +16,7 @@ namespace RenterManager.Infrastructure.Repositories
 
         public async Task<bool> IsBrandUsed(int brandId)
         {
-            return await _repository.Entities.AnyAsync(b => b.BrandId == brandId);
+            return await _repository.Entities.AnyAsync(b => 0 == brandId);
         }
     }
 }
