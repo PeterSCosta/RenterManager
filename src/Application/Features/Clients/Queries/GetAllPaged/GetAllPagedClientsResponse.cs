@@ -1,9 +1,8 @@
-﻿using RenterManager.Domain.Contracts;
-
-namespace RenterManager.Domain.Entities.Catalog
+﻿namespace RenterManager.Application.Features.Clients.Queries.GetAllPaged
 {
-    public class Client : AuditableEntity<int>
+    public class GetAllPagedClientsResponse
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Document { get; set; }
         public string ContactInfo { get; set; }

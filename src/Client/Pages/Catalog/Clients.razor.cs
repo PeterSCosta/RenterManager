@@ -11,21 +11,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using RenterManager.Application.Features.Products.Commands.AddEdit;
-using RenterManager.Client.Infrastructure.Managers.Catalog.Product;
-using RenterManager.Shared.Constants.Permission;
-using Microsoft.AspNetCore.Authorization;
+using RenterManager.Client.Infrastructure.Managers.Catalog.Client;
+using RenterManager.Application.Features.Clients.Queries.GetAllPaged;
+using RenterManager.Application.Features.Clients.Commands.AddEdit;
 
 namespace RenterManager.Client.Pages.Catalog
 {
-    public partial class Products
+    public partial class Clients
     {
-        [Inject] private IProductManager ProductManager { get; set; }
+        [Inject] private IClientManager _clientManager { get; set; }
 
         [CascadingParameter] private HubConnection HubConnection { get; set; }
 
-        private IEnumerable<GetAllPagedProductsResponse> _pagedData;
-        private MudTable<GetAllPagedProductsResponse> _table;
+        private IEnumerable<GetAllPagedClientsResponse> _pagedData;
+        private MudTable<GetAllPagedClientsResponse> _table;
         private int _totalItems;
         private int _currentPage;
         private string _searchString = "";
@@ -34,21 +33,11 @@ namespace RenterManager.Client.Pages.Catalog
         private bool _bordered = false;
 
         private ClaimsPrincipal _currentUser;
-        private bool _canCreateProducts;
-        private bool _canEditProducts;
-        private bool _canDeleteProducts;
-        private bool _canExportProducts;
-        private bool _canSearchProducts;
         private bool _loaded;
 
         protected override async Task OnInitializedAsync()
         {
             _currentUser = await _authenticationManager.CurrentUser();
-            _canCreateProducts = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Products.Create)).Succeeded;
-            _canEditProducts = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Products.Edit)).Succeeded;
-            _canDeleteProducts = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Products.Delete)).Succeeded;
-            _canExportProducts = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Products.Export)).Succeeded;
-            _canSearchProducts = (await _authorizationService.AuthorizeAsync(_currentUser, Permissions.Products.Search)).Succeeded;
 
             _loaded = true;
             HubConnection = HubConnection.TryInitialize(_navigationManager);
@@ -58,14 +47,14 @@ namespace RenterManager.Client.Pages.Catalog
             }
         }
 
-        private async Task<TableData<GetAllPagedProductsResponse>> ServerReload(TableState state)
+        private async Task<TableData<GetAllPagedClientsResponse>> ServerReload(TableState state)
         {
             if (!string.IsNullOrWhiteSpace(_searchString))
             {
                 state.Page = 0;
             }
             await LoadData(state.Page, state.PageSize, state);
-            return new TableData<GetAllPagedProductsResponse> { TotalItems = _totalItems, Items = _pagedData };
+            return new TableData<GetAllPagedClientsResponse> { TotalItems = _totalItems, Items = _pagedData };
         }
 
         private async Task LoadData(int pageNumber, int pageSize, TableState state)
@@ -76,8 +65,8 @@ namespace RenterManager.Client.Pages.Catalog
                 orderings = state.SortDirection != SortDirection.None ? new[] { $"{state.SortLabel} {state.SortDirection}" } : new[] { $"{state.SortLabel}" };
             }
 
-            var request = new GetAllPagedProductsRequest { PageSize = pageSize, PageNumber = pageNumber + 1, SearchString = _searchString, Orderby = orderings };
-            var response = await ProductManager.GetProductsAsync(request);
+            var request = new GetAllPagedClientsRequest { PageSize = pageSize, PageNumber = pageNumber + 1, SearchString = _searchString, Orderby = orderings };
+            var response = await _clientManager.GetClientsAsync(request);
             if (response.Succeeded)
             {
                 _totalItems = response.TotalCount;
@@ -101,7 +90,7 @@ namespace RenterManager.Client.Pages.Catalog
 
         private async Task ExportToExcel()
         {
-            var response = await ProductManager.ExportToExcelAsync(_searchString);
+            var response = await _clientManager.ExportToExcelAsync(_searchString);
             if (response.Succeeded)
             {
                 await _jsRuntime.InvokeVoidAsync("Download", new
@@ -111,8 +100,8 @@ namespace RenterManager.Client.Pages.Catalog
                     MimeType = ApplicationConstants.MimeTypes.OpenXml
                 });
                 _snackBar.Add(string.IsNullOrWhiteSpace(_searchString)
-                    ? _localizer["Products exported"]
-                    : _localizer["Filtered Products exported"], Severity.Success);
+                    ? _localizer["Clients exported"]
+                    : _localizer["Filtered Clients exported"], Severity.Success);
             }
             else
             {
@@ -128,21 +117,21 @@ namespace RenterManager.Client.Pages.Catalog
             var parameters = new DialogParameters();
             if (id != 0)
             {
-                var product = _pagedData.FirstOrDefault(c => c.Id == id);
-                if (product != null)
+                var client = _pagedData.FirstOrDefault(c => c.Id == id);
+                if (client != null)
                 {
-                    parameters.Add(nameof(AddEditProductModal.AddEditProductModel), new AddEditProductCommand
+                    parameters.Add(nameof(AddEditClientModal.AddEditClientModel), new AddEditClientCommand
                     {
-                        Id = product.Id,
-                        Name = product.Name,
-                        Description = product.Description,
-                        DefaultUnitPrice = product.DefaultUnitPrice,
-                        ProductType = product.ProductType
+                        Id = client.Id,
+                        Name = client.Name,
+                        Document = client.Document,
+                        ContactInfo = client.ContactInfo,
+                        Telephone = client.Telephone,
                     });
                 }
             }
             var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
-            var dialog = _dialogService.Show<AddEditProductModal>(id == 0 ? _localizer["Create"] : _localizer["Edit"], parameters, options);
+            var dialog = _dialogService.Show<AddEditClientModal>(id == 0 ? _localizer["Create"] : _localizer["Edit"], parameters, options);
             var result = await dialog.Result;
             if (!result.Cancelled)
             {
@@ -162,7 +151,7 @@ namespace RenterManager.Client.Pages.Catalog
             var result = await dialog.Result;
             if (!result.Cancelled)
             {
-                var response = await ProductManager.DeleteAsync(id);
+                var response = await _clientManager.DeleteAsync(id);
                 if (response.Succeeded)
                 {
                     OnSearch("");

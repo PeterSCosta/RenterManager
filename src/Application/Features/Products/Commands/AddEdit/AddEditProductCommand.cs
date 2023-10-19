@@ -9,8 +9,7 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using RenterManager.Application.Enums;
 
 namespace RenterManager.Application.Features.Products.Commands.AddEdit
 {
@@ -20,14 +19,11 @@ namespace RenterManager.Application.Features.Products.Commands.AddEdit
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Barcode { get; set; }
-        [Required]
         public string Description { get; set; }
         public string ImageDataURL { get; set; }
+        public decimal DefaultUnitPrice { get; set; } = 0;
         [Required]
-        public decimal Rate { get; set; }
-        [Required]
-        public int BrandId { get; set; }
+        public ProductType ProductType { get; set; }
         public UploadRequest UploadRequest { get; set; }
     }
 
@@ -48,16 +44,10 @@ namespace RenterManager.Application.Features.Products.Commands.AddEdit
 
         public async Task<Result<int>> Handle(AddEditProductCommand command, CancellationToken cancellationToken)
         {
-            //if (await _unitOfWork.Repository<Product>().Entities.Where(p => p.Id != command.Id)
-            //    .AnyAsync(p => p.Barcode == command.Barcode, cancellationToken))
-            //{
-            //    return await Result<int>.FailAsync(_localizer["Barcode already exists."]);
-            //}
-
             var uploadRequest = command.UploadRequest;
             if (uploadRequest != null)
             {
-                uploadRequest.FileName = $"P-{command.Barcode}{uploadRequest.Extension}";
+                uploadRequest.FileName = $"P-{command.Id}{uploadRequest.Extension}";
             }
 
             if (command.Id == 0)

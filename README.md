@@ -26,7 +26,7 @@
   <a href="https://github.com/blazorhero/CleanArchitecture">
     <img src="https://codewithmukesh.com/wp-content/uploads/2021/05/BlazorHeroBannerv2.1.jpg" alt="Blazor Hero">
   </a>
-  <h3 align="center">BlazorHero - Clean Architecture Template</h3>
+  <h3 align="center">Soul - Cozinha de Festa</h3>
   <p align="center">
     Open Sourced Solution Template For Blazor Web-Assembly 5.0 built with MudBlazor Components
     <br />

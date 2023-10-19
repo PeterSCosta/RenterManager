@@ -1,4 +1,4 @@
-﻿@page "/dashboard"
+﻿@* @page "/dashboard"
 @attribute [Authorize(Policy = Permissions.Dashboards.View)]
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Dashboard> _localizer
 
@@ -84,4 +84,4 @@ else
             </MudPaper>
         </MudItem>
     </MudGrid>
-}
+} *@

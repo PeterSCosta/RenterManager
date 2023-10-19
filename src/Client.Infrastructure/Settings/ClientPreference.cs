@@ -10,6 +10,6 @@ namespace RenterManager.Client.Infrastructure.Settings
         public bool IsRTL { get; set; }
         public bool IsDrawerOpen { get; set; }
         public string PrimaryColor { get; set; }
-        public string LanguageCode { get; set; } = LocalizationConstants.SupportedLanguages.FirstOrDefault()?.Code ?? "en-US";
+        public string LanguageCode { get; set; } = LocalizationConstants.SupportedLanguages.FirstOrDefault()?.Code ?? "pt-BR";
     }
 }

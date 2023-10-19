@@ -3,13 +3,13 @@ using RenterManager.Domain.Entities.Catalog;
 
 namespace RenterManager.Application.Specifications.Catalog
 {
-    public class ProductFilterSpecification : HeroSpecification<Product>
+    public class ClientFilterSpecification : HeroSpecification<Client>
     {
-        public ProductFilterSpecification(string searchString)
+        public ClientFilterSpecification(string searchString)
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                Criteria = p => p.Name.Contains(searchString) || p.Description.Contains(searchString);
+                Criteria = p => p.Name.Contains(searchString) || p.Document.Contains(searchString);
             }
             else
             {

@@ -6,8 +6,6 @@ namespace RenterManager.Server.Settings
 {
     public record ServerPreference : IPreference
     {
-        public string LanguageCode { get; set; } = LocalizationConstants.SupportedLanguages.FirstOrDefault()?.Code ?? "en-US";
-
-        //TODO - add server preferences
+        public string LanguageCode { get; set; } = LocalizationConstants.SupportedLanguages.FirstOrDefault()?.Code ?? "pt-BR";
     }
 }

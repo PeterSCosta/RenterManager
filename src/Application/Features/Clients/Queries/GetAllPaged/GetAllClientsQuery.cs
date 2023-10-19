@@ -11,16 +11,16 @@ using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RenterManager.Application.Features.Products.Queries.GetAllPaged
+namespace RenterManager.Application.Features.Clients.Queries.GetAllPaged
 {
-    public class GetAllProductsQuery : IRequest<PaginatedResult<GetAllPagedProductsResponse>>
+    public class GetAllClientsQuery : IRequest<PaginatedResult<GetAllPagedClientsResponse>>
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public string SearchString { get; set; }
         public string[] OrderBy { get; set; } // of the form fieldname [ascending|descending],fieldname [ascending|descending]...
 
-        public GetAllProductsQuery(int pageNumber, int pageSize, string searchString, string orderBy)
+        public GetAllClientsQuery(int pageNumber, int pageSize, string searchString, string orderBy)
         {
             PageNumber = pageNumber;
             PageSize = pageSize;
@@ -32,30 +32,30 @@ namespace RenterManager.Application.Features.Products.Queries.GetAllPaged
         }
     }
 
-    internal class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, PaginatedResult<GetAllPagedProductsResponse>>
+    internal class GetAllClientsQueryHandler : IRequestHandler<GetAllClientsQuery, PaginatedResult<GetAllPagedClientsResponse>>
     {
         private readonly IUnitOfWork<int> _unitOfWork;
 
-        public GetAllProductsQueryHandler(IUnitOfWork<int> unitOfWork)
+        public GetAllClientsQueryHandler(IUnitOfWork<int> unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<PaginatedResult<GetAllPagedProductsResponse>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<GetAllPagedClientsResponse>> Handle(GetAllClientsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Product, GetAllPagedProductsResponse>> expression = e => new GetAllPagedProductsResponse
+            Expression<Func<Client, GetAllPagedClientsResponse>> expression = e => new GetAllPagedClientsResponse
             {
                 Id = e.Id,
                 Name = e.Name,
-                Description = e.Description,
-                DefaultUnitPrice = e.DefaultUnitPrice,
-                ProductType = e.ProductType
+                Document = e.Document,
+                ContactInfo = e.ContactInfo,
+                Telephone = e.Telephone,
             };
-            var productFilterSpec = new ProductFilterSpecification(request.SearchString);
+            var clientFilterSpec = new ClientFilterSpecification(request.SearchString);
             if (request.OrderBy?.Any() != true)
             {
-                var data = await _unitOfWork.Repository<Product>().Entities
-                   .Specify(productFilterSpec)
+                var data = await _unitOfWork.Repository<Client>().Entities
+                   .Specify(clientFilterSpec)
                    .Select(expression)
                    .ToPaginatedListAsync(request.PageNumber, request.PageSize);
                 return data;
@@ -63,8 +63,8 @@ namespace RenterManager.Application.Features.Products.Queries.GetAllPaged
             else
             {
                 var ordering = string.Join(",", request.OrderBy); // of the form fieldname [ascending|descending], ...
-                var data = await _unitOfWork.Repository<Product>().Entities
-                   .Specify(productFilterSpec)
+                var data = await _unitOfWork.Repository<Client>().Entities
+                   .Specify(clientFilterSpec)
                    .OrderBy(ordering) // require system.linq.dynamic.core
                    .Select(expression)
                    .ToPaginatedListAsync(request.PageNumber, request.PageSize);

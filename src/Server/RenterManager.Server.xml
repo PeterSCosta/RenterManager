@@ -372,6 +372,37 @@
             <param name="searchString"></param>
             <returns></returns>
         </member>
+        <member name="M:RenterManager.Server.Controllers.v1.Catalog.ClientsController.GetAll(System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            Get All Products
+            </summary>
+            <param name="pageNumber"></param>
+            <param name="pageSize"></param>
+            <param name="searchString"></param>
+            <param name="orderBy"></param>
+            <returns>Status 200 OK</returns>
+        </member>
+        <member name="M:RenterManager.Server.Controllers.v1.Catalog.ClientsController.Post(RenterManager.Application.Features.Clients.Commands.AddEdit.AddEditClientCommand)">
+            <summary>
+            Add/Edit a Product
+            </summary>
+            <param name="command"></param>
+            <returns>Status 200 OK</returns>
+        </member>
+        <member name="M:RenterManager.Server.Controllers.v1.Catalog.ClientsController.Delete(System.Int32)">
+            <summary>
+            Delete a Product
+            </summary>
+            <param name="id"></param>
+            <returns>Status 200 OK response</returns>
+        </member>
+        <member name="M:RenterManager.Server.Controllers.v1.Catalog.ClientsController.Export(System.String)">
+            <summary>
+            Search Products and Export to Excel
+            </summary>
+            <param name="searchString"></param>
+            <returns>Status 200 OK</returns>
+        </member>
         <member name="M:RenterManager.Server.Controllers.v1.Catalog.ProductsController.GetAll(System.Int32,System.Int32,System.String,System.String)">
             <summary>
             Get All Products

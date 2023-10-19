@@ -6,6 +6,12 @@ namespace RenterManager.Shared.Constants.Permission
 {
     public static class Permissions
     {
+        public static class Clients
+        {
+            public const string View = "Permissions.Clients.View";
+        }
+
+
         public static class Products
         {
             public const string View = "Permissions.Products.View";

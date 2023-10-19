@@ -1,0 +1,66 @@
+﻿@page "/catalog/clients"
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Clients> _localizer
+@using RenterManager.Application.Features.Clients.Queries.GetAllPaged;
+
+<style>
+    .mud-table-container {
+        overflow: auto;
+    }
+</style>
+
+<HeroTitle Title="@_localizer["Clients"]" Description="@_localizer["Manage Clients."]" />
+@if (!_loaded)
+{
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+}
+else
+{
+    <MudTable Elevation="25" ServerData="@(new Func<TableState, Task<TableData<GetAllPagedClientsResponse>>>(ServerReload))" Hover="true" Dense="@_dense" Bordered="@_bordered" Striped="@_striped" @ref="_table">
+        <ToolBarContent>
+            <div class="justify-center mud-text-align-center">
+                <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" @onclick="@(() => InvokeModal(0))" StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Surface">@_localizer["Create"]</MudButton>
+                 <MudButton DisableElevation Variant="Variant.Filled" OnClick="@(() => OnSearch(""))" StartIcon="@Icons.Material.Filled.Refresh" IconColor="Color.Surface" Color="Color.Secondary">@_localizer["Reload"]</MudButton>
+
+                 <MudButton DisableElevation Variant="Variant.Filled" OnClick="ExportToExcel" StartIcon="@Icons.Custom.FileFormats.FileExcel" IconColor="Color.Secondary" Color="Color.Surface" Style="margin-left: 5px;">@_localizer["Export"]</MudButton>
+
+
+             </div>
+             <MudToolBarSpacer />
+             <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="@_localizer["Search"]" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+         </ToolBarContent>
+         <HeaderContent>
+             <MudTh><MudTableSortLabel T="GetAllPagedClientsResponse" SortLabel="Id">@_localizer["Id"]</MudTableSortLabel></MudTh>
+             <MudTh><MudTableSortLabel T="GetAllPagedClientsResponse" SortLabel="Name">@_localizer["Name"]</MudTableSortLabel></MudTh>
+             <MudTh><MudTableSortLabel T="GetAllPagedClientsResponse" SortLabel="Document">@_localizer["Document"]</MudTableSortLabel></MudTh>
+             <MudTh><MudTableSortLabel T="GetAllPagedClientsResponse" SortLabel="ContactInfo">@_localizer["ContactInfo"]</MudTableSortLabel></MudTh>
+             <MudTh><MudTableSortLabel T="GetAllPagedClientsResponse" SortLabel="Telephone">@_localizer["Telephone"]</MudTableSortLabel></MudTh>
+             <MudTh Style="text-align:right">@_localizer["Actions"]</MudTh>
+         </HeaderContent>
+         <RowTemplate>
+             <MudTd DataLabel="Id">@context.Id</MudTd>
+             <MudTd DataLabel="Name">
+                 <MudHighlighter Text="@context.Name" HighlightedText="@_searchString" />
+             </MudTd>
+             <MudTd DataLabel="Document">
+                 <MudHighlighter Text="@context.Document" HighlightedText="@_searchString" />
+             </MudTd>
+             <MudTd DataLabel="ContactInfo">
+                 <MudHighlighter Text="@context.ContactInfo" HighlightedText="@_searchString" />
+             </MudTd>
+             <MudTd DataLabel="Telephone">
+                 <MudHighlighter Text="@context.Telephone" HighlightedText="@_searchString" />
+             </MudTd>
+             <MudTd DataLabel="Actions" Style="text-align: right">
+
+                 <MudMenu Label="@_localizer["Actions"]" Variant="Variant.Filled" DisableElevation="true" EndIcon="@Icons.Filled.KeyboardArrowDown" IconColor="Color.Secondary" Direction="Direction.Left" OffsetX="true">
+                     <MudMenuItem @onclick="@(() => InvokeModal(@context.Id))">@_localizer["Edit"]</MudMenuItem>
+                     <MudMenuItem @onclick="@(() => Delete(@context.Id))">@_localizer["Delete"]</MudMenuItem>
+                 </MudMenu>
+             </MudTd>
+         </RowTemplate>
+         <PagerContent>
+             <TablePager />
+         </PagerContent>
+     </MudTable>
+}
