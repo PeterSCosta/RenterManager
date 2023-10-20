@@ -5,7 +5,7 @@ ENV ASPNETCORE_URLS=https://+:5005;http://+:5006
 WORKDIR /app
 EXPOSE 5005
 EXPOSE 5006
-
+ 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /
 COPY ["src/Server/Server.csproj", "src/Server/"]
