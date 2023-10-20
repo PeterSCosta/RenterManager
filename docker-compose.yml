@@ -2,12 +2,12 @@ version: '3.4'
 
 services:
   blazorhero:
-    image: ${DOCKER_REGISTRY-}blazorhero
+    image: renter-manager-app
     build:
       context: .
       dockerfile: src/Server/Dockerfile
     environment:
-      - "ConnectionStrings__DefaultConnection=Server=db;Database=BlazorHero;User=sa;Password=Your_password123;MultipleActiveResultSets=true"
+      - "ConnectionStrings__DefaultConnection=Server=db;Data Source=192.168.1.8,1433;Initial Catalog=RenterManager;User ID=sa;Password=Peter@123;TrustServerCertificate=True"
       - "ASPNETCORE_Kestrel__Certificates__Default__Password=securePassword123"
       - "ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx"
     volumes:
@@ -18,11 +18,11 @@ services:
     depends_on:
       - db
     restart: on-failure
-    container_name: blazorhero
+    container_name: renter-manager-app
 
   db:
     image: "mcr.microsoft.com/mssql/server"
     environment:
-      - "SA_PASSWORD=Your_password123"
+      - "SA_PASSWORD=Peter@123"
       - "ACCEPT_EULA=Y"
     container_name: mssql

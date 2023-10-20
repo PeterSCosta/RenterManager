@@ -5,14 +5,14 @@
         public static readonly LanguageCode[] SupportedLanguages = {
             new LanguageCode
             {
-                Code = "en-US",
-                DisplayName= "English"
-            },
-            new LanguageCode
-            {
                 Code = "pt-BR",
                 DisplayName = "Português"
-            }
+            },
+            //new LanguageCode
+            //{
+            //    Code = "en-US",
+            //    DisplayName= "English"
+            //}
         };
     }
 }
